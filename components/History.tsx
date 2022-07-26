@@ -10,16 +10,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { IHistory } from '../lib/types';
 
-import { apis } from './api';
+import { apis } from '../lib/api';
 const cx = classNames.bind(styles);
 
-interface IHistory {
-    timeSubmit: string;
-    language: string;
-    testCasePass: number;
-    status: boolean;
-}
 type HistoryProps = {
     id: string | string[] | undefined;
 };

@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+import React, { useState, useRef, useEffect, createRef } from 'react';
 import styles from '../../components/css/Editor.module.css';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import AceEditor from 'react-ace';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { defaultValueEditor, modeEditor, navLeftItems } from '../../components/dataCodeUI';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,17 +17,9 @@ import {
     faSpinner,
     faBars,
 } from '@fortawesome/free-solid-svg-icons';
-import { useParams } from 'react-router-dom';
 import { faAlignLeft, faRankingStar, faClock } from '@fortawesome/free-solid-svg-icons';
-import 'ace-builds/src-noconflict/theme-github';
-import 'ace-builds../../components/Rankeme-one_dark';
-import 'ace-builds/sr../../components/Historyuage_tools';
-import 'ace-builds/src../../components/Exercise';
-import 'ace-builds/src-noconflict/mode-java';
-import 'ace-builds/src-noconflict/mode-python';
-import 'ace-builds/src-noconflict/mode-csharp';
-import 'ace-builds/src-noconflict/theme-one_dark';
-import { apis } from '../../components/api';
+
+import { apis } from '../../lib/api';
 import classNames from 'classnames/bind';
 import Rank from '../../components/Rank';
 import History from '../../components/History';
@@ -35,6 +28,10 @@ import ReactAce from 'react-ace/lib/ace';
 import Button from '@mui/material/Button';
 import Image from 'next/image';
 const cx = classNames.bind(styles);
+
+const DynamicComponentWithNoSSR = dynamic(() => import('../../components/CodeEditor'), {
+    ssr: false,
+});
 
 function Editor() {
     const router = useRouter();
@@ -54,7 +51,8 @@ function Editor() {
     const [initialPos, setInitialPos] = useState<number>(0);
     const [initialSize, setInitialSize] = useState<number>(0);
 
-    const editor = useRef<ReactAce>(null);
+    const editor = createRef<ReactAce>();
+    console.log({ editor });
 
     const getData = async () => {
         const resQuestion = await apis.getQuestion(id);
@@ -182,6 +180,7 @@ function Editor() {
                     <Image
                         src="https://static.fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
                         alt="avatar"
+                        layout="fill"
                     />
                     <h6 style={{ margin: '12px 0 0', fontSize: '18px' }}>nvduy-0511</h6>
                 </div>
@@ -238,8 +237,9 @@ function Editor() {
                     <select
                         className={cx('selectpicker')}
                         onChange={(e) => {
+                            console.log(editor.current);
                             setLanguage(e.target.value);
-                            editor.current?.editor.setValue(defaultValueEditor[e.target.value]);
+                            // editor.current?.editor.setValue(defaultValueEditor[e.target.value]);
                         }}
                     >
                         <option value="c">C</option>
@@ -252,27 +252,7 @@ function Editor() {
                 <div id="codeEditor" className={cx('editor')}>
                     <div className={cx('editor__wrapper')}>
                         <div className={cx('editor__body')}>
-                            <AceEditor
-                                ref={editor}
-                                placeholder="Viết code của bạn ở đây..."
-                                defaultValue={defaultValueEditor[language]}
-                                mode={modeEditor[language]}
-                                theme="one_dark"
-                                fontSize="14pt"
-                                width="100%"
-                                height="100%"
-                                name="UNIQUE_ID_OF_DIV"
-                                showPrintMargin={false}
-                                editorProps={{
-                                    $blockScrolling: true,
-                                }}
-                                setOptions={{
-                                    enableBasicAutocompletion: false,
-                                    enableLiveAutocompletion: false,
-                                    enableSnippets: true,
-                                    showLineNumbers: true,
-                                }}
-                            />
+                            <DynamicComponentWithNoSSR ref={editor} language={language} />
                         </div>
                     </div>
 
