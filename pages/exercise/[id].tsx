@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-import React, { useState, useRef, useEffect, createRef } from 'react';
+import React, { useState, useRef, useEffect, createRef, forwardRef } from 'react';
 import styles from '../../components/css/Editor.module.css';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
@@ -29,9 +29,18 @@ import Button from '@mui/material/Button';
 import Image from 'next/image';
 const cx = classNames.bind(styles);
 
-const DynamicComponentWithNoSSR = dynamic(() => import('../../components/CodeEditor'), {
+type ForwardRefEditorProps = {
+    language: string;
+};
+
+const CodeEditorWrap = dynamic(() => import('../../components/CodeEditor'), {
     ssr: false,
 });
+
+const ForwardRefEditor = forwardRef<ReactAce, ForwardRefEditorProps>((props, ref) => (
+    <CodeEditorWrap {...props} editorRef={ref} />
+));
+ForwardRefEditor.displayName = 'ForwardRefEditor';
 
 function Editor() {
     const router = useRouter();
@@ -51,8 +60,9 @@ function Editor() {
     const [initialPos, setInitialPos] = useState<number>(0);
     const [initialSize, setInitialSize] = useState<number>(0);
 
+    const [idS, setIdS] = useState<string | string[] | undefined>('');
+
     const editor = createRef<ReactAce>();
-    console.log({ editor });
 
     const getData = async () => {
         const resQuestion = await apis.getQuestion(id);
@@ -60,6 +70,10 @@ function Editor() {
         const resTestCase = await apis.getTestCase(id);
         setTestCases(resTestCase.data);
     };
+    //call api when change id
+    useEffect(() => {
+        setIdS(id);
+    }, [id]);
 
     useEffect(() => {
         getData();
@@ -68,10 +82,10 @@ function Editor() {
 
     const handleNavLeft = (value: string) => {
         setTabType(value);
-        console.log(value);
     };
 
     function handleClickRunCode() {
+        alert(editor.current?.editor.getValue());
         setResultCode('Đang chạy....');
         const data = async () => {
             try {
@@ -180,7 +194,8 @@ function Editor() {
                     <Image
                         src="https://static.fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
                         alt="avatar"
-                        layout="fill"
+                        width={'60px'}
+                        height={'60px'}
                     />
                     <h6 style={{ margin: '12px 0 0', fontSize: '18px' }}>nvduy-0511</h6>
                 </div>
@@ -193,7 +208,7 @@ function Editor() {
                         onClick={() => handleNavLeft('exercise')}
                     >
                         <FontAwesomeIcon icon={faAlignLeft} className={cx('icon-navmobile')} />
-                        <p>Đề bài</p>
+                        <p>Đề bài </p>
                     </label>
                     <label
                         htmlFor="nav_mobile-input"
@@ -237,9 +252,8 @@ function Editor() {
                     <select
                         className={cx('selectpicker')}
                         onChange={(e) => {
-                            console.log(editor.current);
                             setLanguage(e.target.value);
-                            // editor.current?.editor.setValue(defaultValueEditor[e.target.value]);
+                            editor.current?.editor.setValue(defaultValueEditor[e.target.value]);
                         }}
                     >
                         <option value="c">C</option>
@@ -252,7 +266,7 @@ function Editor() {
                 <div id="codeEditor" className={cx('editor')}>
                     <div className={cx('editor__wrapper')}>
                         <div className={cx('editor__body')}>
-                            <DynamicComponentWithNoSSR ref={editor} language={language} />
+                            <ForwardRefEditor ref={editor} language={language} />
                         </div>
                     </div>
 

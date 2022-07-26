@@ -13,17 +13,17 @@ import { defaultValueEditor, modeEditor, navLeftItems } from '../components/data
 import ReactAce from 'react-ace/lib/ace';
 
 type CodeEditorProps = {
+    editorRef: React.LegacyRef<AceEditor>;
     language: string;
 };
 
-const CodeEditor = React.forwardRef<ReactAce, CodeEditorProps>((props, ref) => {
-    console.log({ ref });
+const CodeEditor = ({ language, editorRef }: CodeEditorProps) => {
     return (
         <AceEditor
-            ref={ref}
+            ref={editorRef}
             placeholder="Viết code của bạn ở đây..."
-            defaultValue={defaultValueEditor[props.language]}
-            mode={modeEditor[props.language]}
+            defaultValue={defaultValueEditor[language]}
+            mode={modeEditor[language]}
             theme="one_dark"
             fontSize="14pt"
             width="100%"
@@ -41,7 +41,5 @@ const CodeEditor = React.forwardRef<ReactAce, CodeEditorProps>((props, ref) => {
             }}
         />
     );
-});
-
-CodeEditor.displayName = 'CodeEditor';
+};
 export default CodeEditor;
