@@ -32,6 +32,8 @@ import Rank from '../../components/Rank';
 import History from '../../components/History';
 import Exercise from '../../components/Exercise';
 import ReactAce from 'react-ace/lib/ace';
+import Button from '@mui/material/Button';
+import Image from 'next/image';
 const cx = classNames.bind(styles);
 
 function Editor() {
@@ -177,7 +179,10 @@ function Editor() {
 
             <div className={cx('nav_mobile')}>
                 <div className={cx('nav_mobile-user')}>
-                    <img src="https://static.fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg" />
+                    <Image
+                        src="https://static.fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg"
+                        alt="avatar"
+                    />
                     <h6 style={{ margin: '12px 0 0', fontSize: '18px' }}>nvduy-0511</h6>
                 </div>
                 <ul className={cx('nav_mobile-list')}>
@@ -237,9 +242,7 @@ function Editor() {
                             editor.current?.editor.setValue(defaultValueEditor[e.target.value]);
                         }}
                     >
-                        <option value="c" defaultValue>
-                            C
-                        </option>
+                        <option value="c">C</option>
                         <option value="cpp">C++</option>
                         <option value="py">Python</option>
                         <option value="cs">C#</option>
