@@ -12,3 +12,12 @@ export interface IHistory {
     testCasePass: number;
     status: boolean;
 }
+
+export type resCode = {
+    success: string;
+    timestamp: string;
+    output: string;
+    language: string;
+    version: string;
+    error: string;
+};

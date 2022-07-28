@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/theme-github';
@@ -13,16 +13,16 @@ import { defaultValueEditor, modeEditor, navLeftItems } from '../components/data
 import ReactAce from 'react-ace/lib/ace';
 
 type CodeEditorProps = {
-    editorRef: React.LegacyRef<AceEditor>;
+    code: string;
+    onChange: (value: string, event?: any) => void;
     language: string;
 };
 
-const CodeEditor = ({ language, editorRef }: CodeEditorProps) => {
+const CodeEditor = ({ code, onChange, language }: CodeEditorProps) => {
     return (
         <AceEditor
-            ref={editorRef}
             placeholder="Viết code của bạn ở đây..."
-            defaultValue={defaultValueEditor[language]}
+            value={code}
             mode={modeEditor[language]}
             theme="one_dark"
             fontSize="14pt"
@@ -30,12 +30,13 @@ const CodeEditor = ({ language, editorRef }: CodeEditorProps) => {
             height="100%"
             name="UNIQUE_ID_OF_DIV"
             showPrintMargin={false}
+            onChange={onChange}
             editorProps={{
                 $blockScrolling: true,
             }}
             setOptions={{
-                enableBasicAutocompletion: false,
-                enableLiveAutocompletion: false,
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true,
                 enableSnippets: true,
                 showLineNumbers: true,
             }}

@@ -29,18 +29,9 @@ import Button from '@mui/material/Button';
 import Image from 'next/image';
 const cx = classNames.bind(styles);
 
-type ForwardRefEditorProps = {
-    language: string;
-};
-
-const CodeEditorWrap = dynamic(() => import('../../components/CodeEditor'), {
+const CodeEditor = dynamic(() => import('../../components/CodeEditor'), {
     ssr: false,
 });
-
-const ForwardRefEditor = forwardRef<ReactAce, ForwardRefEditorProps>((props, ref) => (
-    <CodeEditorWrap {...props} editorRef={ref} />
-));
-ForwardRefEditor.displayName = 'ForwardRefEditor';
 
 function Editor() {
     const router = useRouter();
@@ -61,8 +52,6 @@ function Editor() {
     const [initialSize, setInitialSize] = useState<number>(0);
 
     const [idS, setIdS] = useState<string | string[] | undefined>('');
-
-    const editor = createRef<ReactAce>();
 
     const getData = async () => {
         const resQuestion = await apis.getQuestion(id);
@@ -85,16 +74,15 @@ function Editor() {
     };
 
     function handleClickRunCode() {
-        alert(editor.current?.editor.getValue());
         setResultCode('Đang chạy....');
         const data = async () => {
             try {
                 const response = await apis.runCode({
-                    code: editor.current?.editor.getValue(),
+                    code: code,
                     input: input,
                     language: language,
                 });
-                setResultCode(response.data);
+                setResultCode(response.data.output);
             } catch (error) {
                 console.log('Fetch data error: ', error);
             }
@@ -117,14 +105,11 @@ function Editor() {
         const submit = async () => {
             setTestCases(testCases.map(() => 3));
             try {
-                const response = await apis.runCodes(
-                    {
-                        code: editor.current?.editor.getValue(),
-                        input: '',
-                        language: language,
-                    },
-                    id,
-                );
+                const response = await apis.runCodes({
+                    code: code,
+                    input: '',
+                    language: language,
+                });
                 setTestCases(response.data);
             } catch (error) {
                 console.log('Fetch data error: ', error);
@@ -137,20 +122,21 @@ function Editor() {
         const submit = async () => {
             setTestCases(testCases.map(() => 3));
             try {
-                const response = await apis.submitCode(
-                    {
-                        code: editor.current?.editor.getValue(),
-                        input: '',
-                        language: language,
-                    },
-                    id,
-                );
+                const response = await apis.submitCode({
+                    code: code,
+                    input: '',
+                    language: language,
+                });
                 setTestCases(response.data);
             } catch (error) {
                 console.log('Fetch data error: ', error);
             }
         };
         submit();
+    };
+
+    const handleOnChangeCodeEditor = (value: string, event: any) => {
+        setCode(value);
     };
 
     return (
@@ -253,7 +239,7 @@ function Editor() {
                         className={cx('selectpicker')}
                         onChange={(e) => {
                             setLanguage(e.target.value);
-                            editor.current?.editor.setValue(defaultValueEditor[e.target.value]);
+                            setCode(defaultValueEditor[e.target.value]);
                         }}
                     >
                         <option value="c">C</option>
@@ -266,7 +252,11 @@ function Editor() {
                 <div id="codeEditor" className={cx('editor')}>
                     <div className={cx('editor__wrapper')}>
                         <div className={cx('editor__body')}>
-                            <ForwardRefEditor ref={editor} language={language} />
+                            <CodeEditor
+                                code={code}
+                                language={language}
+                                onChange={handleOnChangeCodeEditor}
+                            />
                         </div>
                     </div>
 

@@ -1,0 +1,77 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.header {
+    background-color: rgb(40 44 52);
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+}
+.logo {
+    width: max-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 19px;
+}
+
+.wrap-code-editor {
+    width: 100%;
+    height: calc(100vh - 60px);
+    display: flex;
+}
+
+.code-editor {
+    flex: 1;
+}
+
+.console {
+    position: relative;
+    width: 350px;
+    height: 100%;
+    color: white;
+    background-color: rgb(40 44 52);
+    border-left: 2px solid #2196f3;
+    padding: 10px;
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.console-output {
+    flex: 1;
+    width: 100%;
+    color: #2196f3;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: left !important;
+    word-wrap: break-word;
+}
+
+.console-output span {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: white;
+}
+
+.console-control {
+    height: max-content;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.console-control div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+}
