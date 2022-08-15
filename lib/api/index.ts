@@ -1,8 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import queryString from 'query-string';
 import { resCode } from '../types';
 const axiosClient = axios.create({
-    baseURL: 'http://localhost:3001/',
+    baseURL: process.env.BASE_URL_API,
     headers: {
         'content-type': 'application/json',
     },
@@ -29,32 +29,8 @@ type reqCode = {
 };
 
 export const apis = {
-    getQuestion: (id: any) => {
-        const url = `/Exercise/getExercise?id=${id}`;
-        return axiosClient.get<string, AxiosResponse<{ type: string }>>(url);
-    },
-    getTestCase: (id: any) => {
-        const url = `/Exercise/getTestCase?id=${id}`;
-        return axiosClient.get<string, AxiosResponse<number[]>>(url);
-    },
     runCode: (data: reqCode) => {
-        const url = `api/compile-code`;
-        return axiosClient.post<string, AxiosResponse<resCode>, reqCode>(url, data);
-    },
-    runCodes: (runCodeRequest: reqCode) => {
-        const url = `/Exercise/runCodes`;
-        return axiosClient.post<string, AxiosResponse<number[]>, reqCode>(url, runCodeRequest);
-    },
-    submitCode: (runCodeRequest: reqCode) => {
-        const url = `/Exercise/submitCode`;
-        return axiosClient.post<reqCode, AxiosResponse<number[]>, reqCode>(url, runCodeRequest);
-    },
-    getHistory: (id: any) => {
-        const url = `/Exercise/getHistory?id=${id}`;
-        return axiosClient.post(url, { id });
-    },
-    getRank: (id: any) => {
-        const url = `/Exercise/getRank?id=${id}`;
-        return axiosClient.post(url, { id });
+        const url = `/`;
+        return axiosClient.post<string, AxiosResponse<resCode>>(url, data);
     },
 };
